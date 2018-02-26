@@ -37,5 +37,5 @@ nosetests.xml
 
 venv
 app.db
-/app/twitter_access.py
+twitter_access.py
 flask_app.log*
