@@ -1,0 +1,100 @@
+{% extends "bootstrap/base.html" %} {% import 'bootstrap/wtf.html' as wtf %} 
+{% block navbar %}
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-nav" href="{{url_for('index')}}">
+                <h1>{{ title }}</h1>
+            </a>
+            <hr>
+        </div>
+    </div>
+</nav>
+{% endblock %} 
+{% block content %}
+<div class="container">
+
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+    <div class="alert alert-info" role="alert">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
+    <div class="row">
+        <div class="col-md-50">
+            <div class="panel panel-default" style="margin-right:15px; margin-left:15px;">
+                <div class="panel-body">
+                    {{ wtf.quick_form(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="container">
+    {% if user %}
+    <a href="{{user.url}}">{{user.name.capitalize()}}'s - Website</a> 
+    {% endif %}
+</div>
+<br>
+<div class="container">
+    <table>
+        <tr>
+            <td style='width:50%'>
+                {% if tweets %} 
+                <p>Last {{tweets_len}} Tweets</p>
+                {% endif %}
+                <div class="pre-scrollable">
+                    {% if tweets %} 
+                    {% for tweet in tweets %}
+                    <div class="panel panel-default" style="margin-right:5px">
+                        <div class="panel-body">
+                            <table>
+                                <tr>
+                                    <td style="padding-right:10px">
+                                        {% if user %}
+                                        <img src="{{user.profile_image_url_https}}" class="img-rounded"/> 
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <p>{{ tweet.user_id }} - {{ tweet.text }}</p>
+                                    </td>
+                                </tr>
+                             </table>
+                             <br>
+                            <p>Created at: {{ tweet.created_at }}</p> 
+                        </div>
+                    </div>
+                    {% endfor %} 
+                    {% endif %}
+                </div>
+            </td>
+            <td style='width:50%'>
+                <script src="https://code.highcharts.com/highcharts.js"></script>
+                <script src="https://code.highcharts.com/highcharts-more.js"></script>
+                <script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+                {% if chart %}
+                <div id='my-chart'></div>
+                <script type="text/javascript">
+                    new Highcharts.Chart({{chart.data | safe }});
+                </script>
+                
+                {% endif %}
+            </td>
+        </tr>
+        <tr style='margin-top:20px'>
+            <td style='width:50%'>
+                {% if sentiment %}
+                <h3>Tweet Sentiment Analysis</h3>
+                {% for s in sentiment %}
+                    <p>{{ s }}</p> 
+                {% endfor %}
+                {% endif %}                
+            </td>
+            <td style='width:50%'>
+                {% if chart %}
+                
+                    <p>{{ chart.statistics }}</p>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+</div>
+{% endblock %}
